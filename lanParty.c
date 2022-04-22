@@ -110,8 +110,6 @@ void createTeamsList(char fileName[], Node** head) {
     fclose(f);
 }
 
-
-
 int main() {
     Node* head = NULL;
 

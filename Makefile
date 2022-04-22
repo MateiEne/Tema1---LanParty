@@ -1,4 +1,6 @@
-build:
+build: lanParty.c
 	gcc *.c -Wall -o lanParty
+run: build
+	./lanParty
 clean:
-	rm -f *.o *~ lanParty
+	rm -f *.c

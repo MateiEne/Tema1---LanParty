@@ -12,7 +12,7 @@ typedef struct Team {
     int nrPlayers;
     char* name;
     Player* players;
-    int points;
+    float points;
 }Team;
 
 struct Elem {
@@ -22,10 +22,19 @@ struct Elem {
 
 typedef struct Elem Node;
 
+float calculateTeamPoints(Player* players, int nrOfPlayers) {
+    float p = 0;
+
+    int i;
+    for (i = 0; i < nrOfPlayers; i++) {
+        p += players[i].points;
+    }
+
+    return (p / nrOfPlayers);
+}
+
 Team getTeam(FILE* f) {
     Team team;
-
-    team.points = 0;
 
     fscanf(f, "%d ", &team.nrPlayers);
 
@@ -51,8 +60,9 @@ Team getTeam(FILE* f) {
         strcpy(team.players[i].secondName, auxPlayerSecondName);
 
         fscanf(f, "%d", &team.players[i].points);
-        team.points = team.points + team.players[i].points;
     }
+
+    team.points = calculateTeamPoints(team.players, team.nrPlayers);
 
     return team;
 }
@@ -117,8 +127,22 @@ void printTeams(Node* head) {
         return;
     }
 
-    printf("%s %d\n", head->team.name, head->team.points);
+    printf("%s %f\n", head->team.name, head->team.points);
     printTeams(head->next);
+}
+
+int calculateNumberOfTeamsToEliminate(int nrOfTeams) {
+    int i = 2;
+
+    while (i * 2 <= nrOfTeams) {
+        i *= 2;
+    }
+
+    return nrOfTeams - i;
+}
+
+Node* findPrevTeamOfMinPointsTeam(Node* head) {
+    
 }
 
 int main() {
@@ -126,5 +150,9 @@ int main() {
 
     createTeamsList("date/t1/d.in", &head);
 
-    printTeams(head);
+    //printTeams(head);
+
+    int n = calculateNumberOfTeamsToEliminate(146);
+
+    printf("%d\n", n);
 }

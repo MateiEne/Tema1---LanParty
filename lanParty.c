@@ -12,6 +12,7 @@ typedef struct Team {
     int nrPlayers;
     char* name;
     Player* players;
+    int points;
 }Team;
 
 struct Elem {
@@ -24,7 +25,7 @@ typedef struct Elem Node;
 Team getTeam(FILE* f) {
     Team team;
 
-    char c;
+    team.points = 0;
 
     fscanf(f, "%d ", &team.nrPlayers);
 
@@ -35,8 +36,6 @@ Team getTeam(FILE* f) {
     fgets(auxTeamName, 56, f);
     team.name = (char*)malloc((strlen(auxTeamName) + 1) * sizeof(char));
     strcpy(team.name, auxTeamName);
-
-    printf("%s\n", auxTeamName);
 
     char auxPlayerFirstName[26];
     char auxPlayerSecondName[26];
@@ -52,6 +51,7 @@ Team getTeam(FILE* f) {
         strcpy(team.players[i].secondName, auxPlayerSecondName);
 
         fscanf(f, "%d", &team.players[i].points);
+        team.points = team.points + team.players[i].points;
     }
 
     return team;
@@ -62,6 +62,8 @@ void deepCopy(Team team, Team* copyTeam) {
     strcpy((*copyTeam).name, team.name);
 
     (*copyTeam).nrPlayers = team.nrPlayers;
+
+    (*copyTeam).points = team.points;   
 
     (*copyTeam).players = (Player*)malloc(team.nrPlayers * sizeof(Player));
 
@@ -100,7 +102,7 @@ void createTeamsList(char fileName[], Node** head) {
 
     fscanf(f, "%d", &nrOfTeams);
 
-    int i, j;
+    int i;
     for (i = 0; i < nrOfTeams; i++) {
         team = getTeam(f);
 
@@ -110,10 +112,19 @@ void createTeamsList(char fileName[], Node** head) {
     fclose(f);
 }
 
+void printTeams(Node* head) {
+    if (head == NULL) {
+        return;
+    }
+
+    printf("%s %d\n", head->team.name, head->team.points);
+    printTeams(head->next);
+}
+
 int main() {
     Node* head = NULL;
 
     createTeamsList("date/t1/d.in", &head);
 
-    printf("%s\n", head->team.name);
+    printTeams(head);
 }

@@ -13,3 +13,5 @@ int main() {
 
     //printTeams(head);
 }
+
+// TO DO: teams queue

@@ -63,7 +63,7 @@ Team getTeam(FILE* f) {
     int i;
 
     fgets(auxTeamName, 56, f);
-    auxTeamName[strlen(auxTeamName) - 1] = '\0';
+    auxTeamName[strlen(auxTeamName) - 2] = '\0';
     team.name = (char*)malloc((strlen(auxTeamName)) * sizeof(char));
     strcpy(team.name, auxTeamName);
 
@@ -147,7 +147,7 @@ void printTeams(Node* head) {
         return;
     }
 
-    printf("%s\n", head->team.name);
+    printf("%s %f\n", head->team.name, head->team.points);
     printTeams(head->next);
 }
 
@@ -170,7 +170,7 @@ Node* findPrevTeamOfMinPointsTeam(Node* head) {
         return head;
     }
 
-    int minTeamPoints = INT_MAX;
+    float minTeamPoints = INT_MAX;
 
     Node* currentNode = head;
     Node* prevNodeToCurrentNode = head;
@@ -178,7 +178,7 @@ Node* findPrevTeamOfMinPointsTeam(Node* head) {
 
     while (currentNode) {
         if (currentNode->team.points < minTeamPoints) {
-            minTeamPoints = head->team.points;
+            minTeamPoints = currentNode->team.points;
             prevNodeToMin = prevNodeToCurrentNode;
         }
 
@@ -214,9 +214,8 @@ void eliminateTeams(Node** head, int* nrOfTeams) {
 
     for (i = 0; i < nrOfTeamsToEliminate; i++) {
         prevNodeToMinTeamPoints = findPrevTeamOfMinPointsTeam(*head);
-        printf("%c\n", prevNodeToMinTeamPoints->next->team.name[strlen(prevNodeToMinTeamPoints->next->team.name) - 2]);
         printf("%s \n", prevNodeToMinTeamPoints->next->team.name);
-        eliminateTeamFromList(prevNodeToMinTeamPoints, &(*head));
+        eliminateTeamFromList(prevNodeToMinTeamPoints, head);
     }
 }
 
@@ -227,10 +226,9 @@ int main() {
     
     int nrOfTeams = calculateNrOfTeams("date/t1/d.in");
 
+    //printf("nr: %d\n", nrOfTeams);
+
     eliminateTeams(&head, &nrOfTeams);
 
     //printTeams(head);
 }
-
-// TO DO: at the end of every team name, there was an \n and I replaced that with \0 but still something is wrong. Fix that!
-// TO DO: the teams are not elimineated corected (not by minimum points)
